@@ -1,4 +1,4 @@
-# ![rust_logo](https://www.rust-lang.org/static/images/rust-logo-blk.svg) Learning Rust
+# <img alt="rust-logo" src="https://www.rust-lang.org/static/images/rust-logo-blk.svg" height="20"> Learning Rust
 
 > Pardon me, just learning the ropes.
 
