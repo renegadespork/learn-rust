@@ -1,4 +1,4 @@
-# Learning Rust
+# [img](https://www.rust-lang.org/static/images/rust-logo-blk.svg) Learning Rust
 
 > Pardon me, just learning the ropes.
 
