@@ -7,3 +7,4 @@ This repo consists of various Rust learning projects. So far, the projects are:
 - **learning-variables**: This is a small script that plays with various data types and arithmetic operations.
 - **functions**: This project experiments with the capabilities of functions.
 - **branches**: This program experiments with various loops, conditions, and control flow. It even has a functioning shop!
+- **ownership**: This experiments with passing values to different variables and scopes.
