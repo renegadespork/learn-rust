@@ -1,1 +1,1 @@
-/home/jesse/Github/learn-rust/ownership/target/debug/ownership: /home/jesse/Github/learn-rust/ownership/src/main.rs
+/Users/jesse/Documents/GitHub/learn-rust/ownership/target/debug/ownership: /Users/jesse/Documents/GitHub/learn-rust/ownership/src/main.rs
