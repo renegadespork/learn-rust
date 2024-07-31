@@ -8,3 +8,4 @@ This repo consists of various Rust learning projects. So far, the projects are:
 - **functions**: This project experiments with the capabilities of functions.
 - **branches**: This program experiments with various loops, conditions, and control flow. It even has a functioning shop!
 - **ownership**: This experiments with passing values to different variables and scopes.
+- **mini-rpg**: Experimenting with a very small text-based rpg game.
