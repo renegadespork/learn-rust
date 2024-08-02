@@ -1,3 +1,5 @@
+//This is broken AF and I cann't figure out why the loops won't work...
+
 use std::io;
 
 fn main() {
