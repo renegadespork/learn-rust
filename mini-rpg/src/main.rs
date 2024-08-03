@@ -2,6 +2,20 @@
 
 use std::io;
 
+enum Class {
+    Knight,
+    Rogue,
+    Ranger,
+    Wizard,
+}
+
+struct Save {
+    class: Class,
+    char_name: String,
+    page: u64,
+    alignment: i32,
+}
+
 fn main() {
     top_menu();
 }
@@ -50,6 +64,28 @@ fn character_select() {
     let option1: (u32, &str) = (1, "Knight");
     let option2: (u32, &str) = (2, "Rogue");
     let option3: (u32, &str) = (3, "Ranger");
-    let option4: (u32, &str) = 
-    println!("Select your character.\n ");
+    let option4: (u32, &str) = (4, "Wizard");
+    let menu_list = [option1, option2, option3, option4];
+    let mut menu_loop = true;
+
+    while menu_loop {
+        println!("Select your character.");
+        for item in menu_list {
+            println!("{}) {}", item.0, item.1);
+        }
+        let mut selection = String::new();
+        io::stdin().read_line(&mut selection).expect("Failed to read line.");
+        let selection: u32 = match selection.trim().parse() {
+            Ok(num) => num,
+            Err(_) => {
+                println!("Invalid selection. Try again.");
+                return;
+            }
+        };
+        menu_loop = character_details(selection);
+    }
+}
+
+fn character_details(selection: u32) -> bool {
+    true
 }
