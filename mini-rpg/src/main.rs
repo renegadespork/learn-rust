@@ -26,12 +26,13 @@ fn top_menu() {
                 return;
             }
         };
-        menu_loop = dbg!(main_menu_selection(selection));
+        menu_loop = main_menu_selection(selection);
     }
 }
 fn main_menu_selection (selection: u32) -> bool {
     if selection == 1 {
         println!("Starting new game.");
+        character_select();
         return false;
     }
     else if selection == 2 {
@@ -46,5 +47,9 @@ fn main_menu_selection (selection: u32) -> bool {
 
 fn character_select() {
     std::process::Command::new("clear").status().unwrap();
-    println!("Select your character. (ToDo)");
+    let option1: (u32, &str) = (1, "Knight");
+    let option2: (u32, &str) = (2, "Rogue");
+    let option3: (u32, &str) = (3, "Ranger");
+    let option4: (u32, &str) = 
+    println!("Select your character.\n ");
 }
