@@ -10,4 +10,4 @@ This repo consists of various Rust learning projects. So far, the projects are:
 - 📒 **ownership**: This experiments with passing values to different variables and scopes.
 - ⚔️ **mini-rpg**: Experimenting with a very small text-based rpg game.
 - 🏗️ **structures**: Learning how to build structures and implemantation types like *method* and *associated functions*.
-- 🧮 **enums-and-patterns**
+- 🪙 **coin-machine** - Explores enums, patterns, and match statements.

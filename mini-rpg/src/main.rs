@@ -1,4 +1,4 @@
-//This is broken AF and I cann't figure out why the loops won't work...
+//VERY unfinished. Here be no dragons.
 
 use std::io;
 
@@ -9,32 +9,27 @@ fn top_menu() {
     let option1: (u32, &str) = (1, "New Game");
     let option2: (u32, &str) = (2, "Exit");
     let menu_list = [option1, option2];
-    let mut selection = String::new();
+    let mut menu_loop = true;
 
-    loop {
-        let menu_loop = true;
+    while menu_loop {
+        std::process::Command::new("clear").status().unwrap();
         println!("Main Menu:\n----------\n");
         for item in menu_list {
             println!("{}) {}", item.0, item.1);
         }
+        let mut selection = String::new();
         io::stdin().read_line(&mut selection).expect("Failed to read line.");
         let selection: u32 = match selection.trim().parse() {
-            Ok(selection) => selection,
+            Ok(num) => num,
             Err(_) => {
                 println!("Invalid selection. Try again.");
                 return;
             }
         };
-        let menu_loop = check_selection(selection);
-        if menu_loop {
-            continue;
-        }
-        else {
-            break;
-        }
+        menu_loop = dbg!(main_menu_selection(selection));
     }
 }
-fn check_selection (selection: u32) -> bool {
+fn main_menu_selection (selection: u32) -> bool {
     if selection == 1 {
         println!("Starting new game.");
         return false;
@@ -47,4 +42,9 @@ fn check_selection (selection: u32) -> bool {
         println!("Invalid Selection.");
         return true;
     }
+}
+
+fn character_select() {
+    std::process::Command::new("clear").status().unwrap();
+    println!("Select your character. (ToDo)");
 }
