@@ -1,6 +1,14 @@
 //VERY unfinished. Here be no dragons.
 
 use std::io;
+use std::process;
+
+enum MainMenuSelection {
+    NewGame,
+    LoadSave,
+    Exit,
+    Invalid,
+}
 
 #[derive(Debug)]
 enum Class {
@@ -10,12 +18,21 @@ enum Class {
     Wizard,
 }
 
-fn class(class: Class) -> String {
+fn class_name(class: Class) -> String {
     match class {
         Class::Knight => String::from("Knight"),
         Class::Rogue => String::from("Rogue"),
         Class::Ranger => String::from("Ranger"),
         Class::Wizard => String::from("Wizard"),
+    }
+}
+
+fn class_id(class: Class) -> u8 {
+    match class {
+        Class::Knight => 1,
+        Class::Rogue => 2,
+        Class::Ranger => 3,
+        Class::Wizard => 4,
     }
 }
 
@@ -43,15 +60,23 @@ struct Save {
 }
 
 fn main() {
-    top_menu();
+    let top_menu_selection: MainMenuSelection = top_menu();
+    match top_menu_selection {
+        MainMenuSelection::NewGame => {
+            let character_selection = character_select();
+            introduction(character_selection);
+        },
+        MainMenuSelection::LoadSave => process::exit(0),
+        MainMenuSelection::Exit => process::exit(0),
+        MainMenuSelection::Invalid => process::exit(1),
+    }
 }
-fn top_menu() {
-    let option1: (u32, &str) = (1, "New Game");
-    let option2: (u32, &str) = (2, "Exit");
-    let menu_list = [option1, option2];
-    let mut menu_loop = true;
 
-    while menu_loop {
+fn top_menu() -> MainMenuSelection {
+    let option1: (u8, &str) = (1, "New Game");
+    let option2: (u8, &str) = (2, "Exit");
+    let menu_list = [option1, option2];
+    loop {
         std::process::Command::new("clear").status().unwrap();
         println!("Main Menu:\n----------\n");
         for item in menu_list {
@@ -63,37 +88,32 @@ fn top_menu() {
             Ok(num) => num,
             Err(_) => {
                 println!("You must enter a number.");
-                return;
+                return MainMenuSelection::Invalid;
             }
         };
-        menu_loop = main_menu_selection(selection);
-    }
-}
-fn main_menu_selection (selection: u32) -> bool {
-    if selection == 1 {
-        println!("Starting new game.");
-        character_select();
-        return false;
-    }
-    else if selection == 2 {
-        println!("Exiting.");
-        return false;
-    }
-    else {
-        println!("Invalid Selection.");
-        return true;
+        if selection == 1 {
+            println!("Starting new game.");
+            return MainMenuSelection::NewGame;
+        }
+        else if selection == 2 {
+            println!("Exiting.");
+            return MainMenuSelection::Exit;
+        }
+        else {
+            println!("Invalid Selection.");
+            return MainMenuSelection::Invalid;
+        }
     }
 }
 
-fn character_select() {
+fn character_select() -> u8 {
     let option1: (u32, &str) = (1, "Knight");
     let option2: (u32, &str) = (2, "Rogue");
     let option3: (u32, &str) = (3, "Ranger");
     let option4: (u32, &str) = (4, "Wizard");
     let menu_list = [option1, option2, option3, option4];
-    // let mut menu_loop = true;
 
-    let character_select = loop {
+    loop {
         std::process::Command::new("clear").status().unwrap();
         println!("Select your character.");
         for item in menu_list {
@@ -105,7 +125,7 @@ fn character_select() {
             Ok(num) => num,
             Err(_) => {
                 println!("You must enter a number.");
-                return;
+                continue;
             }
         };
         let character_details_output: (bool, u8) = character_details(selection);
@@ -114,10 +134,24 @@ fn character_select() {
             continue;
         }
         else {
-            break character_details_output.1;
+            if character_details_output.1 == 1 {
+                return class_id(Class::Knight);
+            }
+            else if character_details_output.1 == 2 {
+                return class_id(Class::Rogue);
+            }
+            else if character_details_output.1 == 3 {
+                return class_id(Class::Ranger);
+            }
+            else if character_details_output.1 == 4 {
+                return class_id(Class::Wizard);                
+            }
+            else {
+                continue;
+            }
         }
     };
-    introduction(character_select);
+
 }
 
 fn character_details(selection: u32) -> (bool, u8) {
@@ -165,7 +199,7 @@ fn character_details(selection: u32) -> (bool, u8) {
     match selection {
         1 => {
             std::process::Command::new("clear").status().unwrap();
-            println!("{}:", class(Class::Knight));
+            println!("{}:", class_name(Class::Knight));
             println!("  {} - {}", trait_list[0], knight_info.strength);
             println!("  {} - {}", trait_list[1], knight_info.fortitude);
             println!("  {} - {}", trait_list[2], knight_info.agility);
@@ -194,7 +228,7 @@ fn character_details(selection: u32) -> (bool, u8) {
         },
         2 => {
             std::process::Command::new("clear").status().unwrap();
-            println!("{}:", class(Class::Rogue));
+            println!("{}:", class_name(Class::Rogue));
             println!("  {} - {}", trait_list[0], rogue_info.strength);
             println!("  {} - {}", trait_list[1], rogue_info.fortitude);
             println!("  {} - {}", trait_list[2], rogue_info.agility);
@@ -223,7 +257,7 @@ fn character_details(selection: u32) -> (bool, u8) {
         },
         3 => {
             std::process::Command::new("clear").status().unwrap();
-            println!("{}:", class(Class::Ranger));
+            println!("{}:", class_name(Class::Ranger));
             println!("  {} - {}", trait_list[0], ranger_info.strength);
             println!("  {} - {}", trait_list[1], ranger_info.fortitude);
             println!("  {} - {}", trait_list[2], ranger_info.agility);
@@ -252,7 +286,7 @@ fn character_details(selection: u32) -> (bool, u8) {
         },
         4 => {
             std::process::Command::new("clear").status().unwrap();
-            println!("{}:", class(Class::Wizard));
+            println!("{}:", class_name(Class::Wizard));
             println!("  {} - {}", trait_list[0], wizard_info.strength);
             println!("  {} - {}", trait_list[1], wizard_info.fortitude);
             println!("  {} - {}", trait_list[2], wizard_info.agility);
@@ -294,7 +328,7 @@ fn introduction(character_select: u8) {
             page: 1,
             alignment: 0,
         };
-        println!("Welcome, {:?}!", player_save.class);
+        println!("Welcome, {:?}!", class_name(Class::Knight));
     }
     else if character_select == 2 {
         let player_save = Save {
@@ -303,7 +337,7 @@ fn introduction(character_select: u8) {
             page: 1,
             alignment: 0,
         };
-        println!("Welcome, {:?}!", player_save.class);
+        println!("Welcome, {:?}!", class_name(Class::Rogue));
     }
     else if character_select == 3 {
         let player_save = Save {
@@ -312,7 +346,7 @@ fn introduction(character_select: u8) {
             page: 1,
             alignment: 0,
         };
-        println!("Welcome, {:?}!", player_save.class);
+        println!("Welcome, {:?}!", class_name(Class::Ranger));
     }
     else if character_select == 4 {
         let player_save = Save {
@@ -321,6 +355,6 @@ fn introduction(character_select: u8) {
             page: 1,
             alignment: 0,
         };
-        println!("Welcome, {:?}!", player_save.class);
+        println!("Welcome, {:?}!", class_name(Class::Wizard));
     }
 }
