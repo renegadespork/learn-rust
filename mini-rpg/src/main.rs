@@ -122,15 +122,23 @@ fn class_stats(class: Class) -> ClassStats {
 }
 
 fn main() {
-    top_menu();
+    let top_menu_selection: MainMenuSelection = top_menu();
+    match top_menu_selection {
+        MainMenuSelection::NewGame => {
+            let character_selection = character_select();
+            introduction(character_selection);
+        },
+        MainMenuSelection::LoadSave => process::exit(0),
+        MainMenuSelection::Exit => process::exit(0),
+        MainMenuSelection::Invalid => process::exit(1),
+    }
 }
-fn top_menu() {
-    let option1: (u32, &str) = (1, "New Game");
-    let option2: (u32, &str) = (2, "Exit");
-    let menu_list = [option1, option2];
-    let mut menu_loop = true;
 
-    while menu_loop {
+fn top_menu() -> MainMenuSelection {
+    let option1: (u8, &str) = (1, "New Game");
+    let option2: (u8, &str) = (2, "Exit");
+    let menu_list = [option1, option2];
+    loop {
         std::process::Command::new("clear").status().unwrap();
         println!("Main Menu:\n----------\n");
         for item in menu_list {
@@ -142,37 +150,32 @@ fn top_menu() {
             Ok(num) => num,
             Err(_) => {
                 println!("You must enter a number.");
-                return;
+                return MainMenuSelection::Invalid;
             }
         };
-        menu_loop = main_menu_selection(selection);
-    }
-}
-fn main_menu_selection (selection: u32) -> bool {
-    if selection == 1 {
-        println!("Starting new game.");
-        character_select();
-        return false;
-    }
-    else if selection == 2 {
-        println!("Exiting.");
-        return false;
-    }
-    else {
-        println!("Invalid Selection.");
-        return true;
+        if selection == 1 {
+            println!("Starting new game.");
+            return MainMenuSelection::NewGame;
+        }
+        else if selection == 2 {
+            println!("Exiting.");
+            return MainMenuSelection::Exit;
+        }
+        else {
+            println!("Invalid Selection.");
+            return MainMenuSelection::Invalid;
+        }
     }
 }
 
-fn character_select() {
+fn character_select() -> u8 {
     let option1: (u32, &str) = (1, "Knight");
     let option2: (u32, &str) = (2, "Rogue");
     let option3: (u32, &str) = (3, "Ranger");
     let option4: (u32, &str) = (4, "Wizard");
     let menu_list = [option1, option2, option3, option4];
-    // let mut menu_loop = true;
 
-    let character_select = loop {
+    loop {
         std::process::Command::new("clear").status().unwrap();
         println!("Select your character.");
         for item in menu_list {
@@ -184,7 +187,7 @@ fn character_select() {
             Ok(num) => num,
             Err(_) => {
                 println!("You must enter a number.");
-                return;
+                continue;
             }
         };
         let character_details_output: (bool, u8) = character_details(selection);
@@ -193,10 +196,24 @@ fn character_select() {
             continue;
         }
         else {
-            break character_details_output.1;
+            if character_details_output.1 == 1 {
+                return class_id(Class::Knight);
+            }
+            else if character_details_output.1 == 2 {
+                return class_id(Class::Rogue);
+            }
+            else if character_details_output.1 == 3 {
+                return class_id(Class::Ranger);
+            }
+            else if character_details_output.1 == 4 {
+                return class_id(Class::Wizard);                
+            }
+            else {
+                continue;
+            }
         }
     };
-    introduction(character_select);
+
 }
 
 fn character_details(selection: u32) -> (bool, u8) {
