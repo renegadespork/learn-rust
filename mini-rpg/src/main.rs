@@ -1,6 +1,14 @@
 //VERY unfinished. Here be no dragons.
 
 use std::io;
+use std::process;
+
+enum MainMenuSelection {
+    NewGame,
+    LoadSave,
+    Exit,
+    Invalid,
+}
 
 enum Traits {
     Strength,
