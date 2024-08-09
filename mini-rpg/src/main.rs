@@ -53,14 +53,14 @@ fn trait_info(traits: Traits) -> TraitInfo {
     }
 }
 
-enum Class {
+enum CharClass {
     Knight,
     Rogue,
     Ranger,
     Wizard,
 }
 
-struct ClassStats {
+struct CharClassStats {
     id: u8,
     name: String,
     strength: u8,
@@ -78,15 +78,15 @@ struct Stats {
 }
 
 struct Save {
-    class: Class,
+    class: CharClass,
     char_name: String,
     page: u64,
     alignment: i32,
 }
 
-fn class_stats(class: Class) -> ClassStats {
+fn class_stats(class: CharClass) -> CharClassStats {
     match class {
-        Class::Knight => ClassStats {
+        CharClass::Knight => CharClassStats {
             id: 1,
             name: String::from("Knight"),
             strength: 8,
@@ -96,7 +96,7 @@ fn class_stats(class: Class) -> ClassStats {
             charisma: 4,
             luck: 5,
         },
-        Class::Rogue => ClassStats {
+        CharClass::Rogue => CharClassStats {
             id: 2,
             name: String::from("Rogue"),
             strength: 3,
@@ -106,7 +106,7 @@ fn class_stats(class: Class) -> ClassStats {
             charisma: 7,
             luck: 7,
         },
-        Class::Ranger => ClassStats {
+        CharClass::Ranger => CharClassStats {
             id: 3,
             name: String::from("Ranger"),
             strength: 5,
@@ -116,7 +116,7 @@ fn class_stats(class: Class) -> ClassStats {
             charisma: 4,
             luck: 5,
         },
-        Class::Wizard => ClassStats {
+        CharClass::Wizard => CharClassStats {
             id: 4,
             name: String::from("Wizard"),
             strength: 2,
@@ -134,7 +134,14 @@ fn main() {
     match top_menu_selection {
         MainMenuSelection::NewGame => {
             let character_selection = character_select();
-            introduction(character_selection);
+            let char_name = enter_name(character_selection);
+            let player_save = Save {
+                class: char_name.1,
+                char_name: char_name.0,
+                page: 1,
+                alignment: 0,
+            };
+            println!("---\n{} the {}\n---", player_save.char_name, class_stats(player_save.class).name);
         },
         MainMenuSelection::LoadSave => process::exit(0),
         MainMenuSelection::Exit => process::exit(0),
@@ -176,7 +183,7 @@ fn top_menu() -> MainMenuSelection {
     }
 }
 
-fn character_select() -> u8 {
+fn character_select() -> CharClass {
     let option1: (u32, &str) = (1, "Knight");
     let option2: (u32, &str) = (2, "Rogue");
     let option3: (u32, &str) = (3, "Ranger");
@@ -198,48 +205,31 @@ fn character_select() -> u8 {
                 continue;
             }
         };
-        let character_details_output: (bool, u8) = character_details(selection);
+        let character_details_output: (bool, CharClass) = character_details(selection);
         let menu_loop = character_details_output.0;
         if menu_loop {
             continue;
         }
         else {
-            if character_details_output.1 == 1 {
-                return class_id(Class::Knight);
-            }
-            else if character_details_output.1 == 2 {
-                return class_id(Class::Rogue);
-            }
-            else if character_details_output.1 == 3 {
-                return class_id(Class::Ranger);
-            }
-            else if character_details_output.1 == 4 {
-                return class_id(Class::Wizard);                
-            }
-            else {
-                continue;
-            }
+            return character_details_output.1;
         }
     };
 
 }
 
-fn character_details(selection: u32) -> (bool, u8) {
-    let trait_list = [trait_info(Traits::Strength).name, trait_info(Traits::Fortitude).name, trait_info(Traits::Agility).name, trait_info(Traits::Intelligence).name, trait_info(Traits::Charisma).name, trait_info(Traits::Luck).name];
-
-
+fn character_details(selection: u32) -> (bool, CharClass) {
     match selection {
         1 => {
-            let knight_str: (String, u8) = (trait_info(Traits::Strength).name, class_stats(Class::Knight).strength);
-            let knight_for: (String, u8) = (trait_info(Traits::Fortitude).name, class_stats(Class::Knight).fortitude);
-            let knight_agi: (String, u8) = (trait_info(Traits::Agility).name, class_stats(Class::Knight).agility);
-            let knight_int: (String, u8) = (trait_info(Traits::Intelligence).name, class_stats(Class::Knight).intelligence);
-            let knight_cha: (String, u8) = (trait_info(Traits::Charisma).name, class_stats(Class::Knight).charisma);
-            let knight_luc: (String, u8) = (trait_info(Traits::Luck).name, class_stats(Class::Knight).luck);
+            let knight_str: (String, u8) = (trait_info(Traits::Strength).name, class_stats(CharClass::Knight).strength);
+            let knight_for: (String, u8) = (trait_info(Traits::Fortitude).name, class_stats(CharClass::Knight).fortitude);
+            let knight_agi: (String, u8) = (trait_info(Traits::Agility).name, class_stats(CharClass::Knight).agility);
+            let knight_int: (String, u8) = (trait_info(Traits::Intelligence).name, class_stats(CharClass::Knight).intelligence);
+            let knight_cha: (String, u8) = (trait_info(Traits::Charisma).name, class_stats(CharClass::Knight).charisma);
+            let knight_luc: (String, u8) = (trait_info(Traits::Luck).name, class_stats(CharClass::Knight).luck);
             let knight_stats = [knight_str, knight_for, knight_agi, knight_int, knight_cha, knight_luc];
 
             std::process::Command::new("clear").status().unwrap();
-            println!("{}:", class_stats(Class::Knight).name);
+            println!("{}:", class_stats(CharClass::Knight).name);
             for stat in knight_stats {
                 println!(" {} - {}", stat.0, stat.1);
             }
@@ -250,29 +240,29 @@ fn character_details(selection: u32) -> (bool, u8) {
                 Ok(num) => num,
                 Err(_) => {
                     println!("You must enter 1 or 2.");
-                    return (true, 0);
+                    return (true, CharClass::Knight);
                 }
             };
             match selection {
-                1 => return (false, class_stats(Class::Knight).id),
-                2 => return (true, 0),
+                1 => return (false, CharClass::Knight),
+                2 => return (true, CharClass::Knight),
                 _ => {
                     println!("You must enter 1 or 2.");
-                    return (true, 0);
+                    return (true, CharClass::Knight);
                 },
             };
         },
         2 => {
-            let rogue_str: (String, u8) = (trait_info(Traits::Strength).name, class_stats(Class::Rogue).strength);
-            let rogue_for: (String, u8) = (trait_info(Traits::Fortitude).name, class_stats(Class::Rogue).fortitude);
-            let rogue_agi: (String, u8) = (trait_info(Traits::Agility).name, class_stats(Class::Rogue).agility);
-            let rogue_int: (String, u8) = (trait_info(Traits::Intelligence).name, class_stats(Class::Rogue).intelligence);
-            let rogue_cha: (String, u8) = (trait_info(Traits::Charisma).name, class_stats(Class::Rogue).charisma);
-            let rogue_luc: (String, u8) = (trait_info(Traits::Luck).name, class_stats(Class::Rogue).luck);
+            let rogue_str: (String, u8) = (trait_info(Traits::Strength).name, class_stats(CharClass::Rogue).strength);
+            let rogue_for: (String, u8) = (trait_info(Traits::Fortitude).name, class_stats(CharClass::Rogue).fortitude);
+            let rogue_agi: (String, u8) = (trait_info(Traits::Agility).name, class_stats(CharClass::Rogue).agility);
+            let rogue_int: (String, u8) = (trait_info(Traits::Intelligence).name, class_stats(CharClass::Rogue).intelligence);
+            let rogue_cha: (String, u8) = (trait_info(Traits::Charisma).name, class_stats(CharClass::Rogue).charisma);
+            let rogue_luc: (String, u8) = (trait_info(Traits::Luck).name, class_stats(CharClass::Rogue).luck);
             let rogue_stats = [rogue_str, rogue_for, rogue_agi, rogue_int, rogue_cha, rogue_luc];
 
             std::process::Command::new("clear").status().unwrap();
-            println!("{}:", class_stats(Class::Rogue).name);
+            println!("{}:", class_stats(CharClass::Rogue).name);
             for stat in rogue_stats {
                 println!(" {} - {}", stat.0, stat.1);
             }
@@ -283,29 +273,29 @@ fn character_details(selection: u32) -> (bool, u8) {
                 Ok(num) => num,
                 Err(_) => {
                     println!("You must enter 1 or 2.");
-                    return (true, 0);
+                    return (true, CharClass::Rogue);
                 }
             };
             match selection {
-                1 => return (false, class_stats(Class::Rogue).id),
-                2 => return (true, 0),
+                1 => return (false, CharClass::Rogue),
+                2 => return (true, CharClass::Rogue),
                 _ => {
                     println!("You must enter 1 or 2.");
-                    return (true, 0);
+                    return (true, CharClass::Rogue);
                 },
             };
         },
         3 => {
-            let ranger_str: (String, u8) = (trait_info(Traits::Strength).name, class_stats(Class::Ranger).strength);
-            let ranger_for: (String, u8) = (trait_info(Traits::Fortitude).name, class_stats(Class::Ranger).fortitude);
-            let ranger_agi: (String, u8) = (trait_info(Traits::Agility).name, class_stats(Class::Ranger).agility);
-            let ranger_int: (String, u8) = (trait_info(Traits::Intelligence).name, class_stats(Class::Ranger).intelligence);
-            let ranger_cha: (String, u8) = (trait_info(Traits::Charisma).name, class_stats(Class::Ranger).charisma);
-            let ranger_luc: (String, u8) = (trait_info(Traits::Luck).name, class_stats(Class::Ranger).luck);
+            let ranger_str: (String, u8) = (trait_info(Traits::Strength).name, class_stats(CharClass::Ranger).strength);
+            let ranger_for: (String, u8) = (trait_info(Traits::Fortitude).name, class_stats(CharClass::Ranger).fortitude);
+            let ranger_agi: (String, u8) = (trait_info(Traits::Agility).name, class_stats(CharClass::Ranger).agility);
+            let ranger_int: (String, u8) = (trait_info(Traits::Intelligence).name, class_stats(CharClass::Ranger).intelligence);
+            let ranger_cha: (String, u8) = (trait_info(Traits::Charisma).name, class_stats(CharClass::Ranger).charisma);
+            let ranger_luc: (String, u8) = (trait_info(Traits::Luck).name, class_stats(CharClass::Ranger).luck);
             let ranger_stats = [ranger_str, ranger_for, ranger_agi, ranger_int, ranger_cha, ranger_luc];
 
             std::process::Command::new("clear").status().unwrap();
-            println!("{}:", class_stats(Class::Ranger).name);
+            println!("{}:", class_stats(CharClass::Ranger).name);
             for stat in ranger_stats {
                 println!(" {} - {}", stat.0, stat.1);
             }
@@ -316,29 +306,29 @@ fn character_details(selection: u32) -> (bool, u8) {
                 Ok(num) => num,
                 Err(_) => {
                     println!("You must enter 1 or 2.");
-                    return (true, 0);
+                    return (true, CharClass::Ranger);
                 }
             };
             match selection {
-                1 => return (false, class_stats(Class::Ranger).id),
-                2 => return (true, 0),
+                1 => return (false, CharClass::Ranger),
+                2 => return (true, CharClass::Ranger),
                 _ => {
                     println!("You must enter 1 or 2.");
-                    return (true, 0);
+                    return (true, CharClass::Ranger);
                 },
             };
         },
         4 => {
-            let wizard_str: (String, u8) = (trait_info(Traits::Strength).name, class_stats(Class::Wizard).strength);
-            let wizard_for: (String, u8) = (trait_info(Traits::Fortitude).name, class_stats(Class::Wizard).fortitude);
-            let wizard_agi: (String, u8) = (trait_info(Traits::Agility).name, class_stats(Class::Wizard).agility);
-            let wizard_int: (String, u8) = (trait_info(Traits::Intelligence).name, class_stats(Class::Wizard).intelligence);
-            let wizard_cha: (String, u8) = (trait_info(Traits::Charisma).name, class_stats(Class::Wizard).charisma);
-            let wizard_luc: (String, u8) = (trait_info(Traits::Luck).name, class_stats(Class::Wizard).luck);
+            let wizard_str: (String, u8) = (trait_info(Traits::Strength).name, class_stats(CharClass::Wizard).strength);
+            let wizard_for: (String, u8) = (trait_info(Traits::Fortitude).name, class_stats(CharClass::Wizard).fortitude);
+            let wizard_agi: (String, u8) = (trait_info(Traits::Agility).name, class_stats(CharClass::Wizard).agility);
+            let wizard_int: (String, u8) = (trait_info(Traits::Intelligence).name, class_stats(CharClass::Wizard).intelligence);
+            let wizard_cha: (String, u8) = (trait_info(Traits::Charisma).name, class_stats(CharClass::Wizard).charisma);
+            let wizard_luc: (String, u8) = (trait_info(Traits::Luck).name, class_stats(CharClass::Wizard).luck);
             let wizard_stats = [wizard_str, wizard_for, wizard_agi, wizard_int, wizard_cha, wizard_luc];
 
             std::process::Command::new("clear").status().unwrap();
-            println!("{}:", class_stats(Class::Wizard).name);
+            println!("{}:", class_stats(CharClass::Wizard).name);
             for stat in wizard_stats {
                 println!(" {} - {}", stat.0, stat.1);
             }
@@ -349,60 +339,53 @@ fn character_details(selection: u32) -> (bool, u8) {
                 Ok(num) => num,
                 Err(_) => {
                     println!("You must enter 1 or 2.");
-                    return (true, 0);
+                    return (true, CharClass::Wizard);
                 }
             };
             match selection {
-                1 => return (false, class_stats(Class::Wizard).id),
-                2 => return (true, 0),
+                1 => return (false, CharClass::Wizard),
+                2 => return (true, CharClass::Wizard),
                 _ => {
                     println!("You must enter 1 or 2.");
-                    return (true, 0);
+                    return (true, CharClass::Wizard);
                 },
             };
         },
         _ => {
             println!("Invalid Selection.");
-            (true, 0)
+            (true, CharClass::Wizard)
         },
     }
 }
 
-fn introduction(character_select: u8) {
-    if character_select == 1 {
-        let player_save = Save {
-            class: Class::Knight,
-            char_name: String::new(),
-            page: 1,
-            alignment: 0,
-        };
-        println!("Welcome, {:?}!", class_stats(player_save.class).name);
-    }
-    else if character_select == 2 {
-        let player_save = Save {
-            class: Class::Rogue,
-            char_name: String::new(),
-            page: 1,
-            alignment: 0,
-        };
-        println!("Welcome, {:?}!", class_stats(player_save.class).name);
-    }
-    else if character_select == 3 {
-        let player_save = Save {
-            class: Class::Ranger,
-            char_name: String::new(),
-            page: 1,
-            alignment: 0,
-        };
-        println!("Welcome, {:?}!", class_stats(player_save.class).name);
-    }
-    else if character_select == 4 {
-        let player_save = Save {
-            class: Class::Wizard,
-            char_name: String::new(),
-            page: 1,
-            alignment: 0,
-        };
-        println!("Welcome, {:?}!", class_stats(player_save.class).name);
-    }
+fn enter_name(character_select: CharClass) -> (String, CharClass) {
+    loop {
+        std::process::Command::new("clear").status().unwrap();
+        let mut input = String::new();
+        println!("Hello there, traveller. What is your name?");
+        io::stdin().read_line(&mut input).expect("Failed to read line.");
+        let char_name = String::from(input.trim());
+
+        println!("{}? Did I hear that right?\n1) Yes\n2) No", char_name);
+        let mut selection = String::new();
+                io::stdin().read_line(&mut selection).expect("Failed to read line.");
+                let selection: u32 = match selection.trim().parse() {
+                    Ok(num) => num,
+                    Err(_) => {
+                        println!("You must enter 1 or 2.");
+                        continue;
+                    }
+                };
+                match selection {
+                    1 => {
+                        println!("Ah yes, welcome {}! Your journey begins...", char_name);
+                        break (char_name, character_select);
+                    }
+                    2 => continue,
+                    _ => {
+                        println!("You must enter 1 or 2.");
+                        continue;
+                    },
+                }
+            }
 }
