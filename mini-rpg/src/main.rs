@@ -2,132 +2,19 @@
 
 use std::io;
 use std::process;
-
-enum MainMenuSelection {
-    NewGame,
-    LoadSave,
-    Exit,
-    Invalid,
-}
-
-enum Traits {
-    Strength,
-    Fortitude,
-    Agility,
-    Intelligence,
-    Charisma,
-    Luck,
-}
-
-struct TraitInfo {
-    id: u8,
-    name: String,
-}
-
-fn trait_info(traits: Traits) -> TraitInfo {
-    match traits {
-        Traits::Strength => TraitInfo {
-            id: 1,
-            name: String::from("Strength"),
-        },
-        Traits::Fortitude => TraitInfo {
-            id: 2,
-            name: String::from("Fortitude"),
-        },
-        Traits::Agility => TraitInfo {
-            id: 3,
-            name: String::from("Agility"),
-        },
-        Traits::Intelligence => TraitInfo {
-            id: 4,
-            name: String::from("Intelligence"),
-        },
-        Traits::Charisma => TraitInfo {
-            id: 5,
-            name: String::from("Charisma"),
-        },
-        Traits::Luck => TraitInfo {
-            id: 6,
-            name: String::from("Luck"),
-        },
-    }
-}
-
-enum CharClass {
-    Knight,
-    Rogue,
-    Ranger,
-    Wizard,
-}
-
-struct CharClassStats {
-    id: u8,
-    name: String,
-    strength: u8,
-    fortitude: u8,
-    agility: u8,
-    intelligence: u8,
-    charisma: u8,
-    luck: u8,
-}
-
-struct Stats {
-    max_health: u32,
-    max_stamina: u32,
-    max_mana: u32,
-}
-
-struct Save {
-    class: CharClass,
-    char_name: String,
-    page: u64,
-    alignment: i32,
-}
-
-fn class_stats(class: CharClass) -> CharClassStats {
-    match class {
-        CharClass::Knight => CharClassStats {
-            id: 1,
-            name: String::from("Knight"),
-            strength: 8,
-            fortitude: 8,
-            agility: 2,
-            intelligence: 3,
-            charisma: 4,
-            luck: 5,
-        },
-        CharClass::Rogue => CharClassStats {
-            id: 2,
-            name: String::from("Rogue"),
-            strength: 3,
-            fortitude: 4,
-            agility: 7,
-            intelligence: 2,
-            charisma: 7,
-            luck: 7,
-        },
-        CharClass::Ranger => CharClassStats {
-            id: 3,
-            name: String::from("Ranger"),
-            strength: 5,
-            fortitude: 4,
-            agility: 8,
-            intelligence: 4,
-            charisma: 4,
-            luck: 5,
-        },
-        CharClass::Wizard => CharClassStats {
-            id: 4,
-            name: String::from("Wizard"),
-            strength: 2,
-            fortitude: 3,
-            agility: 5,
-            intelligence: 8,
-            charisma: 6,
-            luck: 6,
-        },
-    }
-}
+use mini_rpg::base::{
+    Traits,
+    TraitInfo,
+    CharClass,
+    CharClassStats,
+    Stats,
+    Save
+};
+use mini_rpg::base::{
+    trait_info,
+    class_stats
+};
+use mini_rpg::menu::{MainMenuSelection};
 
 fn main() {
     let top_menu_selection: MainMenuSelection = top_menu();
