@@ -115,6 +115,10 @@ pub mod base {
 }
 
 pub mod menu {
+    pub struct MenuOption {
+        id: u8,
+        displaytext: String,
+    }
     pub enum MainMenuSelection {
         NewGame,
         LoadSave,
