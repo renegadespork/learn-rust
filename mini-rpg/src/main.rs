@@ -338,6 +338,7 @@ fn enter_name(character_select: CharClass) -> (String, CharClass) {
             .expect("Failed to read line.");
         let char_name = String::from(input.trim());
 
+        std::process::Command::new("clear").status().unwrap();
         println!("{}? Did I hear that right?\n1) Yes\n2) No", char_name);
         let mut selection = String::new();
         io::stdin()
