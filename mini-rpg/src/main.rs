@@ -2,7 +2,7 @@
 
 use mini_rpg::base::{class_stats, trait_info};
 use mini_rpg::base::{CharClass, Save, Stats, Traits};
-use mini_rpg::menu::{MainMenuSelection, MenuOption};
+use mini_rpg::menu::{MainMenuSelection, menu};
 use std::io;
 use std::process;
 
