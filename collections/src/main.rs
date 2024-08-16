@@ -15,8 +15,9 @@ fn main() {
     let mut v2: Vec<i32> = vec![1, 2, 3, 4, 5, 6, 7, 8];
     v2.append(&mut v);
     print_n_check_express(&v2);
-    // mirror(&v2);
-
+    println! ("{:?}", mirror(&v2));
+    print_values(&v2);
+    println! ("{:?}", double(&v2));
 }
 
 fn print_n_check_express (v: &Vec<i32>) {
@@ -40,17 +41,28 @@ fn check_values (v: &Vec<i32>) {
     }
 }
 
-// Broken
-// fn mirror(v: &Vec<i32>) -> Vec<i32> {
-//     let mut size = v.len();
-//     let mut prepend = -1
-//     while size > 0 {
-//         let mut vtemp: Vec<i32> = [size*-1];
-//         let vtemp = v.append(prepend);
-//         println!("{:?}", vtemp);
-//         let prepend = prepend -1;
-//         let size = size - 1;
-//     }
-//     let vout: Vec<i32> = vec![1, 2, 3];
-//     vout
-// }
+fn mirror(v: &Vec<i32>) -> Vec<i32> {
+    println!("Mirroring vector...");
+    let mut vtemp: Vec<i32> = Vec::new();
+    for item in v {
+        let x = item * -1;
+        vtemp.push(x);
+    }
+    vtemp.push(0);
+    for item in v {
+        let x = item;
+        vtemp.push(*x);
+    }
+    vtemp.sort();
+    vtemp
+}
+
+fn double(v: &Vec<i32>) -> Vec<i32> {
+    println!("Doubling all contents...");
+    let mut vtemp: Vec<i32> = Vec::new();
+    for item in v {
+        let x = item * 2;
+        vtemp.push(x);
+    }
+    vtemp
+}
