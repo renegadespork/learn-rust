@@ -2,14 +2,20 @@
 
 use mini_rpg::base::{class_stats, trait_info};
 use mini_rpg::base::{CharClass, Save, Stats, Traits};
-use mini_rpg::menu::{MainMenuSelection, menu};
+use mini_rpg::menu::menu;
 use std::io;
 use std::process;
 
 fn main() {
-    let top_menu_selection: MainMenuSelection = top_menu();
+    top_menu();
+}
+
+fn top_menu() {
+    let header: String = String::from("Main Menu");
+    let options: Vec<&str> = vec!["New Game", "Load Save", "Exit"];
+    let top_menu_selection: u8 = menu(header, options);
     match top_menu_selection {
-        MainMenuSelection::NewGame => {
+        1 => {
             let character_selection = character_select();
             let char_name = enter_name(character_selection);
             let player_save = Save {
@@ -24,71 +30,24 @@ fn main() {
                 class_stats(player_save.class).name
             );
             intro();
+        },
+        2 => {
+            println!("Saves have not yet been implemented.");
+            process::exit(0);
+        },
+        3 => {
+            println!("Exiting...");
+            process::exit(0);
         }
-        MainMenuSelection::LoadSave => process::exit(0),
-        MainMenuSelection::Exit => process::exit(0),
-        MainMenuSelection::Invalid => process::exit(1),
-    }
-}
-
-fn top_menu() -> MainMenuSelection {
-    let option1: (u8, &str) = (1, "New Game");
-    let option2: (u8, &str) = (2, "Exit");
-    let menu_list = [option1, option2];
-    loop {
-        std::process::Command::new("clear").status().unwrap();
-        println!("Main Menu:\n----------\n");
-        for item in menu_list {
-            println!("{}) {}", item.0, item.1);
-        }
-        let mut selection = String::new();
-        io::stdin()
-            .read_line(&mut selection)
-            .expect("Failed to read line.");
-        let selection: u32 = match selection.trim().parse() {
-            Ok(num) => num,
-            Err(_) => {
-                println!("You must enter a number.");
-                return MainMenuSelection::Invalid;
-            }
-        };
-        if selection == 1 {
-            println!("Starting new game.");
-            return MainMenuSelection::NewGame;
-        } else if selection == 2 {
-            println!("Exiting.");
-            return MainMenuSelection::Exit;
-        } else {
-            println!("Invalid Selection.");
-            return MainMenuSelection::Invalid;
-        }
+        _ => process::exit(1),
     }
 }
 
 fn character_select() -> CharClass {
-    let option1: (u32, &str) = (1, "Knight");
-    let option2: (u32, &str) = (2, "Rogue");
-    let option3: (u32, &str) = (3, "Ranger");
-    let option4: (u32, &str) = (4, "Wizard");
-    let menu_list = [option1, option2, option3, option4];
-
     loop {
-        std::process::Command::new("clear").status().unwrap();
-        println!("Select your character.");
-        for item in menu_list {
-            println!("{}) {}", item.0, item.1);
-        }
-        let mut selection = String::new();
-        io::stdin()
-            .read_line(&mut selection)
-            .expect("Failed to read line.");
-        let selection: u32 = match selection.trim().parse() {
-            Ok(num) => num,
-            Err(_) => {
-                println!("You must enter a number.");
-                continue;
-            }
-        };
+        let header: String = String::from("Select your character.");
+        let options: Vec<&str> = vec!["Knight", "Rogue", "Ranger", "Wizard"];
+        let selection: u8 = menu(header, options);
         let character_details_output: (bool, CharClass) = character_details(selection);
         let menu_loop = character_details_output.0;
         if menu_loop {
@@ -99,7 +58,7 @@ fn character_select() -> CharClass {
     }
 }
 
-fn character_details(selection: u32) -> (bool, CharClass) {
+fn character_details(selection: u8) -> (bool, CharClass) {
     match selection {
         1 => {
             let knight_str: (String, u8) = (

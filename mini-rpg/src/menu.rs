@@ -3,20 +3,21 @@ pub struct MenuOption {
     id: u8,
     displaytext: String,
 }
-pub enum MainMenuSelection {
-    NewGame,
-    LoadSave,
-    Exit,
-    Invalid,
-}
 
-pub fn menu(options: &[String]) -> u8 {
+pub fn menu(header: String, options: Vec<&str>) -> u8 {
     loop {
         std::process::Command::new("clear").status().unwrap();
-        let index: u8 = 1;
-        for option in options {
-            println!("{}) {}", index, option);
-            let index: u8 = index + 1;
+        let mut h: usize = header.len();
+        let mut separator = String::new();
+        while h > 0 {
+            separator = separator + "=";
+            h = *&mut h - 1;
+        }
+        println!("{}\n{}", header, separator);
+        for (index, option) in options.iter().enumerate() {
+            let x: usize = index + 1;
+            println!("{}) {}", x, option);
+            
         }
         let mut selection = String::new();
             io::stdin()
