@@ -1,7 +1,7 @@
 //VERY unfinished. Here be no dragons.
 
 use mini_rpg::base::{class_stats, trait_info};
-use mini_rpg::base::{CharClass, Save, Stats, Traits};
+use mini_rpg::base::{CharClass, Save,Traits};
 use mini_rpg::menu::menu;
 use std::io;
 use std::process;

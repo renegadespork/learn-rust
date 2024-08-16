@@ -1,8 +1,4 @@
 use std::io;
-pub struct MenuOption {
-    id: u8,
-    displaytext: String,
-}
 
 pub fn menu(header: String, options: Vec<&str>) -> u8 {
     loop {
