@@ -11,3 +11,4 @@ This repo consists of various Rust learning projects. So far, the projects are:
 - ⚔️ **mini-rpg**: Experimenting with a very small text-based rpg game.
 - 🏗️ **structures**: Learning how to build structures and implemantation types like *method* and *associated functions*.
 - 🪙 **coin-machine** - Explores enums, patterns, and match statements.
+- 📚 **collections** Experimenting with collection types. 
