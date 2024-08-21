@@ -1,1 +1,0 @@
-/Users/jesse/Documents/GitHub/learn-rust/mini-rpg/target/debug/mini-rpg: /Users/jesse/Documents/GitHub/learn-rust/mini-rpg/src/base.rs /Users/jesse/Documents/GitHub/learn-rust/mini-rpg/src/lib.rs /Users/jesse/Documents/GitHub/learn-rust/mini-rpg/src/main.rs /Users/jesse/Documents/GitHub/learn-rust/mini-rpg/src/menu.rs

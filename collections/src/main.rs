@@ -1,4 +1,4 @@
-use std::{collections::HashMap, hash::Hash};
+use std::collections::HashMap;
 
 #[derive(Debug)]
 enum Location {
@@ -45,7 +45,20 @@ fn main() {
     println!("\nThese people are too close together: {}\nLet's put some space between them:", people);
     personal_space(people, space);
     re_hash();
-
+    let mut prices = HashMap::new();
+    prices.insert("Apple", 0.30);
+    prices.insert("Banana", 0.10);
+    prices.insert("Watermelon", 3.00);
+    prices.insert("Kiwi", 0.50);
+    print_prices(&prices);
+    println!("\n🍉🍉Watermelon Sale!!!🍉🍉\n50% off!");
+    let prices = sale(&mut prices, "Watermelon", 0.5);
+    print_prices(&prices);
+    println!("\nTime for some exercises.\n");
+    print_exercise(1, "Given a list of integers, use a vector and return the median (when sorted, the value in the middle position) and mode (the value that occurs most often; a hash map will be helpful here) of the list.");
+    exercise1();
+    print_exercise(2, "Using a hash map and vectors, create a text interface to allow a user to add employee names to a department in a company; for example, “Add Sally to Engineering” or “Add Amir to Sales.” Then let the user retrieve a list of all people in a department or all people in the company by department, sorted alphabetically.");
+    exercise2();
 }
 
 fn print_n_check_express (v: &Vec<i32>) {
@@ -142,5 +155,95 @@ fn re_hash () {
     println!("\nScoreboard... again...\n======================");
     for (team, score) in & scores {
         println!("{}: {}", team, score);
+    }
+}
+
+fn print_prices(input: &HashMap<&str, f32>) {
+    println!("\nPrices\n======");
+    for key in input {
+        println!("{:?} - ${:?}", key.0, key.1);
+    }
+}
+
+fn sale<'a>(list: &'a mut HashMap<&'a str, f32>, name: &'a str, discount: f32) -> &'a mut HashMap<&'a str, f32> {
+    let price = list.entry(name).or_insert(0.0);
+    let sale_price = *price * discount;
+    list.insert(name, sale_price);
+    list
+}
+
+fn print_exercise(num: u8, desc: &str) {
+    println!("\nExercise number {}:\n==================\n{}\n", num, desc);
+}
+
+fn exercise1() {
+    let mut integers = vec![6, 2, 34, 25, 17, 12, 33, 34, 99, 4, 5, 5, 6, 6, 77, 104];
+    println!("The values are {:?}", integers);
+    fn mean (integers: &Vec<i32>) -> f32 {
+        let mut sum = 0;
+        let mut count = 0; 
+        for value in integers {
+            sum += value;
+            count += 1;
+        }
+        let mean: f32 = sum as f32 / count as f32;
+        mean
+    }
+    println!("The mean is {}", mean(&integers));
+    integers.sort();
+    let size = integers.capacity();
+    let middle = size / 2;
+    let median = integers.get(middle);
+    match median {
+        Some(median) => println!("The median is {}.", median),
+        None => println!("Error. No median found.")
+    }
+    let mut freq = HashMap::new();
+    for value in integers {
+        let count = freq.entry(value).or_insert(0);
+        *count += 1;
+    }
+    let max = freq.iter().max_by_key(|entry | entry.1);
+    match max {
+        Some(max) => println!("The mode is {:?}.", max.0),
+        None => println!("Error. No mode found.")
+    }
+    let max = freq.iter().max_by_key(|entry | entry.0);
+    match max {
+        Some(max) => println!("The largest number is {:?}.", max.0),
+        None => println!("Error. No maximum found.")
+    }
+}
+
+fn exercise2() {
+    use std::io;
+    let users: Vec<String> = vec![];
+    let user_depts: HashMap<String, String> = HashMap::new();
+    enum Commands {
+        Add,
+        List,
+        Unknown,
+    }
+    println!("Enter a command. Your options are \"Add [User] [Group]\" or \"List\"");
+    let command = parse_user_input();
+    match command {
+        Commands::Add => println!("The user sent an add command."),
+        Commands::List => println!("The user sent a list command."),
+        Commands::Unknown => println!("The user sent an unknown command."),
+    }
+    fn parse_user_input() -> Commands {
+        let mut input = String::new();
+            io::stdin()
+                .read_line(&mut input)
+                .expect("Failed to read line.");
+        let input: Vec<&str> = input.trim()
+            .split_whitespace()
+            .collect();
+        let command: String = input[0].to_lowercase();
+        match command.as_str() {
+            "add" => Commands::Add,
+            "list" => Commands::List,
+            _ => Commands::Unknown,
+        }
     }
 }
