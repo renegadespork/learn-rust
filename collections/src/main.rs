@@ -1,3 +1,5 @@
+use std::{collections::HashMap, hash::Hash};
+
 #[derive(Debug)]
 enum Location {
     Id(u32),
@@ -35,6 +37,14 @@ fn main() {
     println!("\nTime to play with Strings.\n=========================");
     let array: [&str; 4] = ["Pre", "con", "cep", "tion"];
     println!("When you combine the following:\n{:?}\nYou get:\n{}", array, combinator(array));
+    let word: &str = "trust";
+    let ord: &str = &word[1..=4];
+    println!("You can't spell \"{}\" without \"{}\".", word, ord);
+    let people: &str = "🧍🧍🧍🧍🧍🧍";
+    let space: char = '🌌';
+    println!("\nThese people are too close together: {}\nLet's put some space between them:", people);
+    personal_space(people, space);
+    re_hash();
 
 }
 
@@ -103,8 +113,6 @@ fn location_details(location: Vec<Location>) {
         },
         None => println!("Error. Missing location data."),
     }
-    let name = location.get(1);
-    
 }
 
 fn combinator(input: [&str; 4]) -> String {
@@ -114,4 +122,25 @@ fn combinator(input: [&str; 4]) -> String {
     let d = input[3];
     let combined: String = format!("{a}{b}{c}{d}");
     combined
+}
+
+fn personal_space(emoji1: &str, emoji2: char) {
+    for e in emoji1.chars() {
+        println!("{}\n{}", e, emoji2);
+    }
+}
+
+fn re_hash () {
+    let mut scores = HashMap::new();
+    scores.insert(String::from("Red Team"), 15);
+    scores.insert(String::from("Blue Team"), 18);
+    let team_name1 = String::from("Red Team");
+    let team_name2 = String::from("Blue Team");
+    let red_score = scores.get(&team_name1).copied().unwrap_or(0);
+    let blue_score = scores.get(&team_name2).copied().unwrap_or(0);
+    println!("\nScoreboard\n==========\nRed Team: {}\nBlue Team: {}", red_score, blue_score);
+    println!("\nScoreboard... again...\n======================");
+    for (team, score) in & scores {
+        println!("{}: {}", team, score);
+    }
 }
