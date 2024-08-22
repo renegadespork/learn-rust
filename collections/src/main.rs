@@ -217,21 +217,35 @@ fn exercise1() {
 
 fn exercise2() {
     use std::io;
-    let users: Vec<String> = vec![];
-    let user_depts: HashMap<String, String> = HashMap::new();
+    let mut users: Vec<String> = vec![];
+    let mut user_depts: HashMap<String, String> = HashMap::new();
     enum Commands {
         Add,
         List,
+        Exit,
         Unknown,
     }
-    println!("Enter a command. Your options are \"Add [User] [Group]\" or \"List\"");
-    let command = parse_user_input();
-    match command {
-        Commands::Add => println!("The user sent an add command."),
-        Commands::List => println!("The user sent a list command."),
-        Commands::Unknown => println!("The user sent an unknown command."),
+    struct Command {
+        cmd: Commands,
+        arg1: String,
+        arg2: String,
     }
-    fn parse_user_input() -> Commands {
+    loop {
+        println!("Enter a command. Your options are \"Add [User] [Group]\", \"List\", or \"Exit\".");
+        let cmd = parse_user_input();
+        match cmd.cmd {
+            Commands::Add => println!("The user sent an add command."),
+            Commands::List => println!("\nUser List\n---------\n{:?}", users),
+            Commands::Exit => {
+                println!("Exiting. Goodbye.");
+                break;
+            },
+            Commands::Unknown => {
+                println!("Unknown command. Try again.\n");
+            },
+        }
+    }
+    fn parse_user_input() -> Command {
         let mut input = String::new();
             io::stdin()
                 .read_line(&mut input)
@@ -241,9 +255,38 @@ fn exercise2() {
             .collect();
         let command: String = input[0].to_lowercase();
         match command.as_str() {
-            "add" => Commands::Add,
-            "list" => Commands::List,
-            _ => Commands::Unknown,
+            "add" => {
+                let cmd = Command {
+                    cmd: Commands::Add,
+                    arg1: input[1].to_lowercase().to_string(),
+                    arg2: input[2].to_lowercase().to_string(),
+                };
+                cmd
+            },
+            "list" => {
+                let cmd = Command {
+                    cmd: Commands::List,
+                    arg1: String::new(),
+                    arg2: String::new(),
+                };
+                cmd
+            },
+            "exit" => {
+                let cmd = Command {
+                    cmd: Commands::Exit,
+                    arg1: String::new(),
+                    arg2: String::new(),
+                };
+                cmd
+            },
+            _ => {
+                let cmd = Command {
+                    cmd: Commands::Unknown,
+                    arg1: String::new(),
+                    arg2: String::new(),
+                };
+                cmd
+            },
         }
     }
 }
