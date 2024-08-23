@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{arch::x86_64::_CMP_ORD_Q, collections::HashMap};
 
 #[derive(Debug)]
 enum Location {
@@ -234,8 +234,13 @@ fn exercise2() {
         println!("Enter a command. Your options are \"Add [User] [Group]\", \"List\", or \"Exit\".");
         let cmd = parse_user_input();
         match cmd.cmd {
-            Commands::Add => println!("The user sent an add command."),
-            Commands::List => println!("\nUser List\n---------\n{:?}", users),
+            Commands::Add => {
+                let arg1 = cmd.arg1.clone();
+                let arg2 = cmd.arg2.clone();
+                user_depts.insert(arg1, arg2);
+                println!("{} has been added to {}.", cmd.arg1, cmd.arg2);
+            },
+            Commands::List => println!("\nUser List\n---------\n{:#?}", user_depts),
             Commands::Exit => {
                 println!("Exiting. Goodbye.");
                 break;
@@ -256,12 +261,36 @@ fn exercise2() {
         let command: String = input[0].to_lowercase();
         match command.as_str() {
             "add" => {
-                let cmd = Command {
-                    cmd: Commands::Add,
-                    arg1: input[1].to_lowercase().to_string(),
-                    arg2: input[2].to_lowercase().to_string(),
-                };
-                cmd
+                match input.get(1) {
+                    Some(&str) => match input.get(2) {
+                        Some(&str) => {
+                            let cmd = Command {
+                                cmd: Commands::Add,
+                                arg1: input[1].to_lowercase().to_string(),
+                                arg2: input[2].to_lowercase().to_string(),
+                            };
+                        cmd
+                        },
+                        None => {
+                            let cmd = Command {
+                            cmd: Commands::Add,
+                            arg1: String::new(),
+                            arg2: String::new(),
+                            };
+                            println!("You are missing [Group].");
+                            cmd
+                        },
+                    },
+                    None => {
+                        let cmd = Command {
+                            cmd: Commands::Add,
+                            arg1: String::new(),
+                            arg2: String::new(),
+                        };
+                        println!("You are missing [User].");
+                        cmd
+                    },
+                }
             },
             "list" => {
                 let cmd = Command {
