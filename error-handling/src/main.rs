@@ -1,4 +1,5 @@
 use std::fs::File;
+use std::io::{ErrorKind, Read};
 
 struct GiftDetails {
     name: String,
@@ -27,11 +28,7 @@ fn main() {
     let gift: Gift = Gift::Cake;
     let emoji = gift_details(&gift).emoji;
     let guests = ["Charlie", "Melinda", "Jenny", "Prudence"];
-    let guestlist_result = File::open("guests.txt");
-    let guestslist = match guestlist_result {
-        Ok(file) => file,
-        Err(error) => panic!("Could not open guest list. Error: {}", error)     ,
-    };
+    read_guest_list();
     println! ("Here is your gift: {}", emoji);
     open_gift(gift);
     print_guest_name(&guests, 6);
@@ -73,4 +70,29 @@ fn suffix(index: &usize) -> String {
         let suffix = String::from("th");
         suffix
     }
+}
+
+fn read_guest_list() -> String {
+    let mut guests = String::new();
+    let guestlist_result = File::open("guests.txt");
+    let guestslist = match guestlist_result {
+        Ok(mut file) => {
+            file.read_to_string(&mut guests);
+            return guests
+        },
+        Err(error) => match error.kind() {
+            ErrorKind::NotFound => match File::create("guests.txt") {
+                Ok(mut created_file) => {
+                    created_file.read_to_string(&mut guests);
+                    return guests
+                },
+                Err(e) => {
+                    panic!("Guest list doesn't exist and could not be created. Reason: {:?}", e);
+                },
+            },
+            other_error => {
+                panic!("Guest list could not be opened. Reason: {:?}", other_error);
+            },
+        },
+    };
 }
