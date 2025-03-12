@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{ErrorKind, Read};
+use std::io::{ErrorKind, Read, stdin};
 
 struct GiftDetails {
     name: String,
@@ -31,7 +31,8 @@ fn main() {
     read_guest_list();
     println! ("Here is your gift: {}", emoji);
     open_gift(gift);
-    print_guest_name(&guests, 6);
+    print_guest_name(&guests, 2);
+    make_guest_list();
 }
 
 fn open_gift(gift: Gift) {
@@ -50,7 +51,7 @@ fn open_gift(gift: Gift) {
 fn print_guest_name(guests: &[&str], mut guestnum: usize) {
     let guestnum = *&mut guestnum + 1;
     let suffix: String = suffix(&guestnum);
-    println!("Here comes your {}{} guest, {}!", guestnum, suffix, guests[guestnum]);
+    println!("Here comes your {}{} guest: {}!", guestnum, suffix, guests[guestnum]);
 }
 
 fn suffix(index: &usize) -> String {
@@ -95,4 +96,17 @@ fn read_guest_list() -> String {
             },
         },
     };
+}
+
+fn make_guest_list() -> String {
+    println!("No Guest List Found. Please enter guest names separated by spaces.");
+    let mut input = String::new();
+    stdin().read_line(&mut input).unwrap();
+    let guests: Vec<&str> = input.trim().split_whitespace().collect();
+    let mut guest_list = String::new();
+    for guest in guests {
+        let mut guest_list = guest_list.clone() + ", " + guest;
+    }
+    println!("Guest List: {}", guest_list);
+    guest_list
 }
