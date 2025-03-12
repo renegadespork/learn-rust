@@ -13,3 +13,4 @@ This repo consists of various Rust learning projects. So far, the projects are:
 - 🪙 **coin-machine**: Explores enums, patterns, and match statements.
 - 📚 **collections**: Experimenting with collection types. 
 - ⚠️ **error-handling**: Learning different error types and behaviors.
+- 💻 **cli-program**: Taking the things I've learned and building a small cli program that can edit text files.

@@ -1,40 +1,14 @@
-use std::env;
-use std::fs;
-use core::error;
-
-struct Arguments {
-    filepath: String,
-    search: String
-}
+use cli_program::arguments::{self, Command};
 
 fn main() {
-    read_file(parse_arguments().filepath);
-}
-
-fn parse_arguments() -> Arguments {
-    let args: Vec<String> = env::args().collect();
-    let argnum = args.len();
-    if argnum < 3 {
-            panic!("Missing arguments.");
+    let cmd = Command::parse_arguments();
+    match cmd.cmd {
+        arguments::CMD::Read => {
+            cmd.read_file();
+        },
+        arguments::CMD::Append => {
+            cmd.append_to_file();
         }
-    else {}
-    let filepath = &args[1];
-    let search = &args[2];
-    let arguments = Arguments {
-        filepath: String::from(filepath),
-        search: String::from(search),
-    };
-    arguments
-}
-
-fn read_file(filepath: String) {
-    let contents = fs::read_to_string(&filepath);
-    match contents {
-        Ok(c) => {
-            println!("{c}");
-        },
-        Err(_) => {
-            println!("Error reading {}.\n", &filepath);
-        },
+        _ => {}
     }
 }
